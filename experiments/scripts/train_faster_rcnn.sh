@@ -45,7 +45,7 @@ case ${DATASET} in
     STEPSIZE="[500]"
     ITERS=120
     ANCHORS="[4,8,16,32]"
-    RATIOS="[0.12, 0.5, 1, 2, 8]"
+    RATIOS="[0.12,0.5,1,2,8]"
     ;;
   *)
     echo "No dataset given"

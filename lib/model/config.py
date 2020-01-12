@@ -365,6 +365,7 @@ def cfg_from_file(filename):
 
 
 def cfg_from_list(cfg_list):
+  print("======================Config list:", cfg_list)
   """Set config keys via list (e.g., from command line)."""
   from ast import literal_eval
   assert len(cfg_list) % 2 == 0
@@ -381,6 +382,7 @@ def cfg_from_list(cfg_list):
     except:
       # handle the case when v is a string literal
       value = v
+    print("======================Error:", value)
     assert type(value) == type(d[subkey]), \
       'type {} does not match original type {}'.format(
         type(value), type(d[subkey]))
