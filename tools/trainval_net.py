@@ -41,7 +41,7 @@ def parse_args():
                       default='voc_2007_test', type=str)
   parser.add_argument('--iters', dest='max_iters',
                       help='number of iterations to train',
-                      default=70000, type=int)
+                      default=200, type=int)
   parser.add_argument('--tag', dest='tag',
                       help='tag of the model',
                       default=None, type=str)
