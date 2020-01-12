@@ -1,4 +1,3 @@
-cd ..
 cd lib
 make clean
 make
