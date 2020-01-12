@@ -117,16 +117,15 @@ class display(imdb):
         """
         cache_file = osp.join(self.cache_path, self.name + '_gt_roidb.pkl')
         if osp.exists(cache_file):
-        with open(cache_file, 'rb') as fid:
-            roidb = pickle.load(fid)
-        print('{} gt roidb loaded from {}'.format(self.name, cache_file))
-        return roidb
+            with open(cache_file, 'rb') as fid:
+                roidb = pickle.load(fid)
+            print('{} gt roidb loaded from {}'.format(self.name, cache_file))
+            return roidb
 
-        gt_roidb = [self._load_coco_annotation(index)
-                    for index in self._image_index]
+        gt_roidb = [self._load_coco_annotation(index) for index in self._image_index]
 
         with open(cache_file, 'wb') as fid:
-        pickle.dump(gt_roidb, fid, pickle.HIGHEST_PROTOCOL)
+            pickle.dump(gt_roidb, fid, pickle.HIGHEST_PROTOCOL)
         print('wrote gt roidb to {}'.format(cache_file))
         return gt_roidb
 
@@ -180,13 +179,13 @@ class display(imdb):
     num_images = self.num_images
     widths = self._get_widths()
     for i in range(num_images):
-      boxes = self.roidb[i]['boxes'].copy()
-      oldx1 = boxes[:, 0].copy()
-      oldx2 = boxes[:, 2].copy()
-      boxes[:, 0] = widths[i] - oldx2 - 1
-      boxes[:, 2] = widths[i] - oldx1 - 1
-      assert (boxes[:, 2] >= boxes[:, 0]).all()
-      entry = {'width': widths[i],
+        boxes = self.roidb[i]['boxes'].copy()
+        oldx1 = boxes[:, 0].copy()
+        oldx2 = boxes[:, 2].copy()
+        boxes[:, 0] = widths[i] - oldx2 - 1
+        boxes[:, 2] = widths[i] - oldx1 - 1
+        assert (boxes[:, 2] >= boxes[:, 0]).all()
+        entry = {'width': widths[i],
                'height': self.roidb[i]['height'],
                'boxes': boxes,
                'gt_classes': self.roidb[i]['gt_classes'],
@@ -194,7 +193,7 @@ class display(imdb):
                'flipped': True,
                'seg_areas': self.roidb[i]['seg_areas']}
 
-      self.roidb.append(entry)
+        self.roidb.append(entry)
     self._image_index = self._image_index * 2
 
     def _get_box_file(self, index):
@@ -205,11 +204,10 @@ class display(imdb):
     IoU_hi_thresh = 0.95
 
     def _get_thr_ind(coco_eval, thr):
-      ind = np.where((coco_eval.params.iouThrs > thr - 1e-5) &
-                     (coco_eval.params.iouThrs < thr + 1e-5))[0][0]
-      iou_thr = coco_eval.params.iouThrs[ind]
-      assert np.isclose(iou_thr, thr)
-      return ind
+        ind = np.where((coco_eval.params.iouThrs > thr - 1e-5) & (coco_eval.params.iouThrs < thr + 1e-5))[0][0]
+        iou_thr = coco_eval.params.iouThrs[ind]
+        assert np.isclose(iou_thr, thr)
+        return ind
 
     ind_lo = _get_thr_ind(coco_eval, IoU_lo_thresh)
     ind_hi = _get_thr_ind(coco_eval, IoU_hi_thresh)
@@ -217,18 +215,18 @@ class display(imdb):
     # area range index 0: all area ranges
     # max dets index 2: 100 per image
     precision = \
-      coco_eval.eval['precision'][ind_lo:(ind_hi + 1), :, :, 0, 2]
+        coco_eval.eval['precision'][ind_lo:(ind_hi + 1), :, :, 0, 2]
     ap_default = np.mean(precision[precision > -1])
     print(('~~~~ Mean and per-category AP @ IoU=[{:.2f},{:.2f}] '
            '~~~~').format(IoU_lo_thresh, IoU_hi_thresh))
     print('{:.1f}'.format(100 * ap_default))
     for cls_ind, cls in enumerate(self.classes):
-      if cls == '__background__':
-        continue
-      # minus 1 because of __background__
-      precision = coco_eval.eval['precision'][ind_lo:(ind_hi + 1), :, cls_ind - 1, 0, 2]
-      ap = np.mean(precision[precision > -1])
-      print('{:.1f}'.format(100 * ap))
+        if cls == '__background__':
+            continue
+        # minus 1 because of __background__
+        precision = coco_eval.eval['precision'][ind_lo:(ind_hi + 1), :, cls_ind - 1, 0, 2]
+        ap = np.mean(precision[precision > -1])
+        print('{:.1f}'.format(100 * ap))
 
     print('~~~~ Summary metrics ~~~~')
     coco_eval.summarize()
