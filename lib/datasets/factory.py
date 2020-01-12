@@ -42,8 +42,7 @@ for year in ['2015']:
 
 # Set up display data
 for split in ['train', 'val']:
-  name = 'dislay'
-  __sets[name] = (lambda split=split: display(split)) 
+  __sets[split] = (lambda split=split: display(split)) 
 
 def get_imdb(name):
   """Get an imdb (image database) by name."""
