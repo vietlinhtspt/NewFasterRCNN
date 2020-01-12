@@ -1,5 +1,5 @@
 cd ..
-cd tf-faster-rcnn/lib
+cd lib
 make clean
 make
 cd ..
