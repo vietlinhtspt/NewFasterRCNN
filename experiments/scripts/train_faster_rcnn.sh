@@ -42,6 +42,7 @@ case ${DATASET} in
   display)
     TRAIN_IMDB="train"
     TEST_IMDB="val"
+    STEPSIZE="[500]"
     ITERS=120
     ANCHORS="[4,8,16,32]"
     RATIOS="[0.12, 0.5, 1, 2, 8]"
