@@ -98,7 +98,7 @@ class display(imdb):
         """
         Return the absolute path to image i in the image sequence.
         """
-        return self.
+        return self.image_path_from_index(self._image_index[i])
 
     def image_path_from_index(self, index):
         """
