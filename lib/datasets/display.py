@@ -175,60 +175,60 @@ class display(imdb):
             'flipped': False,
             'seg_areas': seg_areas}
 
-   def append_flipped_images(self):
-    num_images = self.num_images
-    widths = self._get_widths()
-    for i in range(num_images):
-        boxes = self.roidb[i]['boxes'].copy()
-        oldx1 = boxes[:, 0].copy()
-        oldx2 = boxes[:, 2].copy()
-        boxes[:, 0] = widths[i] - oldx2 - 1
-        boxes[:, 2] = widths[i] - oldx1 - 1
-        assert (boxes[:, 2] >= boxes[:, 0]).all()
-        entry = {'width': widths[i],
-               'height': self.roidb[i]['height'],
-               'boxes': boxes,
-               'gt_classes': self.roidb[i]['gt_classes'],
-               'gt_overlaps': self.roidb[i]['gt_overlaps'],
-               'flipped': True,
-               'seg_areas': self.roidb[i]['seg_areas']}
+    def append_flipped_images(self):
+        num_images = self.num_images
+        widths = self._get_widths()
+        for i in range(num_images):
+            boxes = self.roidb[i]['boxes'].copy()
+            oldx1 = boxes[:, 0].copy()
+            oldx2 = boxes[:, 2].copy()
+            boxes[:, 0] = widths[i] - oldx2 - 1
+            boxes[:, 2] = widths[i] - oldx1 - 1
+            assert (boxes[:, 2] >= boxes[:, 0]).all()
+            entry = {'width': widths[i],
+                'height': self.roidb[i]['height'],
+                'boxes': boxes,
+                'gt_classes': self.roidb[i]['gt_classes'],
+                'gt_overlaps': self.roidb[i]['gt_overlaps'],
+                'flipped': True,
+                'seg_areas': self.roidb[i]['seg_areas']}
 
-        self.roidb.append(entry)
-    self._image_index = self._image_index * 2
+            self.roidb.append(entry)
+        self._image_index = self._image_index * 2
 
     def _get_box_file(self, index):
         raise NotImplementedError
     
     def _print_detection_eval_metrics(self, coco_eval):
-    IoU_lo_thresh = 0.5
-    IoU_hi_thresh = 0.95
+        IoU_lo_thresh = 0.5
+        IoU_hi_thresh = 0.95
 
-    def _get_thr_ind(coco_eval, thr):
-        ind = np.where((coco_eval.params.iouThrs > thr - 1e-5) & (coco_eval.params.iouThrs < thr + 1e-5))[0][0]
-        iou_thr = coco_eval.params.iouThrs[ind]
-        assert np.isclose(iou_thr, thr)
-        return ind
+        def _get_thr_ind(coco_eval, thr):
+            ind = np.where((coco_eval.params.iouThrs > thr - 1e-5) & (coco_eval.params.iouThrs < thr + 1e-5))[0][0]
+            iou_thr = coco_eval.params.iouThrs[ind]
+            assert np.isclose(iou_thr, thr)
+            return ind
 
-    ind_lo = _get_thr_ind(coco_eval, IoU_lo_thresh)
-    ind_hi = _get_thr_ind(coco_eval, IoU_hi_thresh)
-    # precision has dims (iou, recall, cls, area range, max dets)
-    # area range index 0: all area ranges
-    # max dets index 2: 100 per image
-    precision = \
-        coco_eval.eval['precision'][ind_lo:(ind_hi + 1), :, :, 0, 2]
-    ap_default = np.mean(precision[precision > -1])
-    print(('~~~~ Mean and per-category AP @ IoU=[{:.2f},{:.2f}] '
-           '~~~~').format(IoU_lo_thresh, IoU_hi_thresh))
-    print('{:.1f}'.format(100 * ap_default))
-    for cls_ind, cls in enumerate(self.classes):
-        if cls == '__background__':
-            continue
-        # minus 1 because of __background__
-        precision = coco_eval.eval['precision'][ind_lo:(ind_hi + 1), :, cls_ind - 1, 0, 2]
-        ap = np.mean(precision[precision > -1])
-        print('{:.1f}'.format(100 * ap))
+        ind_lo = _get_thr_ind(coco_eval, IoU_lo_thresh)
+        ind_hi = _get_thr_ind(coco_eval, IoU_hi_thresh)
+        # precision has dims (iou, recall, cls, area range, max dets)
+        # area range index 0: all area ranges
+        # max dets index 2: 100 per image
+        precision = \
+            coco_eval.eval['precision'][ind_lo:(ind_hi + 1), :, :, 0, 2]
+        ap_default = np.mean(precision[precision > -1])
+        print(('~~~~ Mean and per-category AP @ IoU=[{:.2f},{:.2f}] '
+            '~~~~').format(IoU_lo_thresh, IoU_hi_thresh))
+        print('{:.1f}'.format(100 * ap_default))
+        for cls_ind, cls in enumerate(self.classes):
+            if cls == '__background__':
+                continue
+            # minus 1 because of __background__
+            precision = coco_eval.eval['precision'][ind_lo:(ind_hi + 1), :, cls_ind - 1, 0, 2]
+            ap = np.mean(precision[precision > -1])
+            print('{:.1f}'.format(100 * ap))
 
-    print('~~~~ Summary metrics ~~~~')
-    coco_eval.summarize()
+        print('~~~~ Summary metrics ~~~~')
+        coco_eval.summarize()
 
     def _do_detetion_eval(self, res_file, output_dir)
