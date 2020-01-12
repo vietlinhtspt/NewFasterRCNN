@@ -147,12 +147,13 @@ class display(imdb):
         gt_classes = np.zeros((num_objs), dtype=np.int32)
         overlaps = np.zeros((num_objs, self.num_classes), dtype=np.float32)
         seg_areas = np.zeros((num_objs), dtype=np.float32)
+        width, height = 0, 0
 
         for i in range(0, len(annotations), 3):
             if i != index:
                 continue
             temp = annotations[i].split(',')
-
+            
             # data in ground truth file has 3 line for each img
             for j in range(0, 3):
                 temp = annotations[i + j].split(',')
@@ -160,14 +161,16 @@ class display(imdb):
                 y1 = int(temp[2])  
                 x2 = int(temp[3]) 
                 y2 = int(temp[4]) 
+                width = x2 - x1
+                height = y2 - y1
                 box = [x1, y1, x2, y2] 
                 boxes[j, :] = box
                 gt_classes[j] = int(temp[5][0]) + 1
                 seg_areas[j] = (x2 - x1) * (y2 - y1)
                 overlaps[j, int(temp[5][0]) + 1] = 1.0
 
-        return {'width': x2 - x1,
-            'height': y2 - y1,
+        return {'width': width,
+            'height': height,
             'boxes': boxes,
             'gt_classes': gt_classes,
             'gt_overlaps': overlaps,
