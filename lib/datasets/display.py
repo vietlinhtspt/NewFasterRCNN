@@ -231,4 +231,25 @@ class display(imdb):
         print('~~~~ Summary metrics ~~~~')
         coco_eval.summarize()
 
-    def _do_detetion_eval(self, res_file, output_dir)
+    def _do_detetion_eval(self, res_file, output_dir):
+        raise NotImplementedError
+
+    def _do_detection_eval(self, res_file, output_dir):
+        raise NotImplementedError
+
+    def _coco_results_one_category(self, boxes, cat_id):
+        raise NotImplementedError
+
+    def _write_coco_results_file(self, all_boxes, res_file):
+        raise NotImplementedError
+
+    def evaluate_detections(self, all_boxes, output_dir):
+        raise NotImplementedError
+
+    def competition_mode(self, on):
+        if on:
+            self.config['use_salt'] = False
+            self.config['cleanup'] = False
+        else:
+            self.config['use_salt'] = True
+            self.config['cleanup'] = True
