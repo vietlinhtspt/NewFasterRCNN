@@ -121,7 +121,7 @@ class display(imdb):
             print('{} gt roidb loaded from {}'.format(self.name, cache_file))
             return roidb
 
-        gt_roidb = [self._load_coco_annotation(index) for index in self._image_index]
+        gt_roidb = [self._load_display_annotation(index) for index in self._image_index]
 
         with open(cache_file, 'wb') as fid:
             pickle.dump(gt_roidb, fid, pickle.HIGHEST_PROTOCOL)
