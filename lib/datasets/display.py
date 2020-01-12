@@ -145,8 +145,8 @@ class display(imdb):
         num_objs = 3
         boxes = np.zeros((num_objs, 4), dtype=np.uint16)
         gt_classes = np.zeros((num_objs), dtype=np.int32)
-        overlaps = np.zeros((num_objs, self.num_classes), dtype=np.float32)
-        seg_areas = np.ones((num_objs), dtype=np.float32)
+        overlaps = np.ones((num_objs, self.num_classes), dtype=np.float32)
+        seg_areas = np.zeros((num_objs), dtype=np.float32)
         width, height = 0, 0
 
         for i in range(0, len(annotations), 3):
