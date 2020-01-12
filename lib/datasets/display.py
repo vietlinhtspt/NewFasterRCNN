@@ -170,7 +170,7 @@ class display(imdb):
 
         ds_utils.validate_boxes(boxes, width=width, height=height)
         overlaps = scipy.sparse.csr_matrix(overlaps)
-        print("[display.py:173] ", overlaps)
+        print("===================[display.py:173] ", overlaps)
 
         return {'width': width,
             'height': height,
