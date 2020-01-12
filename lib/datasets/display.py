@@ -85,7 +85,7 @@ class display(imdb):
             # Create id = image name
             fid = temp[0].split(".")[0]
             # Create path
-            fname = os.path.join(self.imgdir, fname)
+            fname = os.path.join(self._data_path, self._image_set, fname)
             roidb["image_id"] = int(fid)
             self.ids.append(roidb)
         return self.ids
