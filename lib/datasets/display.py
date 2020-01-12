@@ -146,7 +146,7 @@ class display(imdb):
         boxes = np.zeros((num_objs, 4), dtype=np.uint16)
         gt_classes = np.zeros((num_objs), dtype=np.int32)
         overlaps = np.zeros((num_objs, self.num_classes), dtype=np.float32)
-        seg_areas = np.zeros((num_objs), dtype=np.float32)
+        seg_areas = np.ones((num_objs), dtype=np.float32)
         width, height = 0, 0
 
         for i in range(0, len(annotations), 3):
@@ -167,7 +167,9 @@ class display(imdb):
                 boxes[j, :] = box
                 gt_classes[j] = int(temp[5][0]) + 1
                 seg_areas[j] = (x2 - x1) * (y2 - y1)
-                overlaps[j, int(temp[5][0]) + 1] = 1.0
+
+        ds_utils.validate_boxes(boxes, width=width, height=height)
+        overlaps = scipy.sparse.csr_matrix(overlaps)
 
         return {'width': width,
             'height': height,
